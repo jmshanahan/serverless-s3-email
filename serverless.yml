@@ -1,0 +1,30 @@
+
+service: s3-notification
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: eu-west-1
+  profile: serverless-admin
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - s3:*
+      Resource: "*"
+
+package:
+  include:
+    - mailer/**
+
+functions:
+  s3_notification:
+    handler: handler.s3_notification
+    events:
+      - s3:
+          bucket: s3-notification-clonea0
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .pdf
+
+
